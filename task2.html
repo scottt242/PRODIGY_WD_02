@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Add Font Awesome CDN here -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            max-height: 100vh;
+
+        }
+
+        .container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* Ensure relative positioning for absolute children */
+        }
+
+        .container>img {
+            width: 100%;
+            min-height: 100%;
+            filter: blur(7px); /* Apply blur to the image */
+            position: absolute; /* Make the image fill the entire container */
+            z-index: -1; /* Ensure image is behind the content */
+        }
+h1{
+    position: absolute;
+font-size: 135px;
+mix-blend-mode: overlay;
+}
+@media(max-width:384px){
+    h1{
+        font-size: 50px;
+        position: absolute;
+        top:100px;
+    }
+}
+        .card {
+            background-color: rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Optional border to make the card visible */
+            position: relative; /* Ensure it sits on top of the blurred background */
+            z-index: 1;
+        }
+
+        .counter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        .options {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .options .reset,.stop,.start {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 100%;
+            cursor: pointer;
+            transition: .3s;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+        .options span.active{
+            display: none;
+        }
+
+        .options .reset:hover,.stop:hover,.start:hover {
+            background-color:rgba(255, 255, 255, 0.5);
+        }
+        .card .tr{
+            display: flex;
+gap: 10px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+padding:0 10px;
+        }
+    </style>
+    <title>Task-02</title>
+</head>
+
+<body>
+    <div class="container">
+        <img src="bigben.jpeg" alt="Background Image">
+        <h1>COUNTER</h1>
+        <div class="card">
+            <div class="counter">
+                <div class="box 1">00</div>
+                <div class="box 2">00</div>
+                <div class="box 3">00</div>
+                <div class="box 4">00</div>
+            </div>
+            <div class="options">
+                <span>
+                <span class="start"><i class="fas fa-play"></i></span>
+                <span class="stop active"><i class="fas fa-stop"></i></span>
+            </span>
+                <span class="reset"><i class="fa-solid fa-rotate-left"></i></span>
+            </div>
+            <div class="savedList">
+
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+        let boxes=document.querySelectorAll(".counter .box")
+        let card=document.querySelector(".container .card .savedList")
+        let play=document.querySelector(".options .start")
+        let stop=document.querySelector(".options .stop")
+        let reset=document.querySelector(".options .reset")
+        let interval;
+        let i=0;
+        function save(){
+            i++
+            let div=document.createElement("div")
+            let pg=document.createElement("p")
+            let index=document.createTextNode(`${i}=  `)
+            pg.appendChild(index)
+            div.appendChild(pg)
+div.classList.add("tr")
+            boxes.forEach((e,i)=>{
+
+                let time=document.createTextNode(e.textContent)
+                let p=document.createElement("p")
+
+
+                p.appendChild(time)
+div.appendChild(p)
+card.appendChild(div)
+console.log(p.textContent)
+            })
+        }
+        play.onclick=()=>{
+            clearInterval(interval)//to avoid create many intervals when we click a lot
+play.classList.add("active")
+stop.classList.remove("active")
+            interval=setInterval(()=>{
+                boxes[0].innerHTML=+boxes[0].innerHTML+10
+                if(boxes[0].innerHTML==1000){
+                    boxes[0].innerHTML=0
+                    boxes[1].innerHTML=+boxes[1].innerHTML+1
+                    if(boxes[1].innerHTML==60){
+                        boxes[1].innerHTML=0
+                        boxes[2].innerHTML=+boxes[2].innerHTML+1
+                        if(boxes[2].innerHTML==60){
+                            boxes[2].innerHTML=0
+                            boxes[3].innerHTML=+boxes[3].innerHTML+1
+                            if(boxes[3].innerHTML==24){
+                                boxes[3].innerHTML=0
+                            }
+                        }
+                    }
+                }
+
+
+            },10)//because setInterval make issues in 1ms(too small)
+
+        }
+stop.onclick=()=>{
+    clearInterval(interval)
+    play.classList.remove("active")
+stop.classList.add("active")
+let cardElement = document.querySelector(".card");
+let cardHeight = window.getComputedStyle(cardElement).getPropertyValue('height');
+
+// Convert the height from '500px' to a number (remove 'px')
+if (parseInt(cardHeight) > 400) {
+    cardElement.style.height = "400px"; // Set height with 'px'
+    cardElement.style.overflow = "scroll"; // Set overflow to scroll
+}
+        save()
+
+}
+        reset.onclick=()=>{
+            play.classList.remove("active")
+stop.classList.add("active")
+            clearInterval(interval)
+            boxes.forEach(box=>{
+                box.innerHTML="0"+0
+            })
+
+        }
+
+    </script>
+</body>
+
+</html>
